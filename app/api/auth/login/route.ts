@@ -12,8 +12,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-
-    // Find user with tenant info
     const user = await prisma.user.findUnique({
       where: { email },
       include: { tenant: true }
@@ -25,8 +23,6 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
-
-    // Verify password
     const isValid = await verifyPassword(password, user.passwordHash)
     if (!isValid) {
       return NextResponse.json(
@@ -34,8 +30,6 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
-
-    // Generate JWT token
     const token = generateToken({
       userId: user.id,
       email: user.email,

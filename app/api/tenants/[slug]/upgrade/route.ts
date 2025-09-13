@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { verifyToken } from '@/lib/auth'
 
-// Helper function to get user from token
 async function getUserFromRequest(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -16,7 +15,6 @@ async function getUserFromRequest(request: NextRequest) {
   }
 }
 
-// POST /api/tenants/[slug]/upgrade - Upgrade to Pro
 export async function POST(
   request: NextRequest,
   { params }: { params: { slug: string } }
@@ -30,7 +28,6 @@ export async function POST(
     )
   }
 
-  // Check if user is admin
   if (user.role !== 'admin') {
     return NextResponse.json(
       { error: 'Forbidden: Only admins can upgrade the tenant plan' },
@@ -39,7 +36,6 @@ export async function POST(
   }
 
   try {
-    // Verify tenant exists and matches user's tenant
     const tenant = await prisma.tenant.findUnique({
       where: { slug: params.slug }
     })
@@ -64,8 +60,6 @@ export async function POST(
         { status: 200 }
       )
     }
-
-    // Upgrade tenant to pro
     const updatedTenant = await prisma.tenant.update({
       where: { id: tenant.id },
       data: { plan: 'pro' }

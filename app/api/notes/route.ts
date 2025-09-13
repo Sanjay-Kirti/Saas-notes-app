@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { verifyToken } from '@/lib/auth'
 
-// Helper function to get user from token
 async function getUserFromRequest(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -16,7 +15,6 @@ async function getUserFromRequest(request: NextRequest) {
   }
 }
 
-// GET /api/notes - List tenant's notes
 export async function GET(request: NextRequest) {
   const user = await getUserFromRequest(request)
   
@@ -54,7 +52,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/notes - Create note
 export async function POST(request: NextRequest) {
   const user = await getUserFromRequest(request)
   
@@ -75,7 +72,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check tenant plan and note limit
     const tenant = await prisma.tenant.findUnique({
       where: { id: user.tenantId },
       include: {
@@ -90,7 +86,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Enforce free plan limit
     if (tenant.plan === 'free' && tenant.notes.length >= 3) {
       return NextResponse.json(
         { error: 'Free plan limited to 3 notes. Please upgrade to Pro plan.' },
@@ -98,7 +93,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create note
     const note = await prisma.note.create({
       data: {
         title,

@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { verifyToken } from '@/lib/auth'
 
-// Helper function to get user from token
 async function getUserFromRequest(request: NextRequest) {
   const authHeader = request.headers.get('authorization')
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -15,8 +14,6 @@ async function getUserFromRequest(request: NextRequest) {
     return null
   }
 }
-
-// GET /api/notes/[id] - Get specific note
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -61,8 +58,6 @@ export async function GET(
     )
   }
 }
-
-// PUT /api/notes/[id] - Update note
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -79,7 +74,6 @@ export async function PUT(
   try {
     const { title, content } = await request.json()
 
-    // Check if note exists and belongs to tenant
     const existingNote = await prisma.note.findFirst({
       where: {
         id: params.id,
@@ -94,7 +88,6 @@ export async function PUT(
       )
     }
 
-    // Update note
     const note = await prisma.note.update({
       where: { id: params.id },
       data: {
@@ -120,7 +113,6 @@ export async function PUT(
   }
 }
 
-// DELETE /api/notes/[id] - Delete note
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -135,7 +127,7 @@ export async function DELETE(
   }
 
   try {
-    // Check if note exists and belongs to tenant
+  
     const existingNote = await prisma.note.findFirst({
       where: {
         id: params.id,
@@ -149,8 +141,6 @@ export async function DELETE(
         { status: 404 }
       )
     }
-
-    // Delete note
     await prisma.note.delete({
       where: { id: params.id }
     })

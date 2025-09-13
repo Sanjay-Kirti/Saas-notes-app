@@ -6,12 +6,10 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('Starting seed...')
 
-  // Clear existing data
   await prisma.note.deleteMany()
   await prisma.user.deleteMany()
   await prisma.tenant.deleteMany()
 
-  // Create tenants
   const acmeTenant = await prisma.tenant.create({
     data: {
       slug: 'acme',
@@ -28,10 +26,8 @@ async function main() {
     },
   })
 
-  // Hash password for all users
   const passwordHash = await bcrypt.hash('password', 10)
 
-  // Create users for Acme
   const acmeAdmin = await prisma.user.create({
     data: {
       email: 'admin@acme.test',
@@ -50,7 +46,6 @@ async function main() {
     },
   })
 
-  // Create users for Globex
   const globexAdmin = await prisma.user.create({
     data: {
       email: 'admin@globex.test',
@@ -69,7 +64,6 @@ async function main() {
     },
   })
 
-  // Create sample notes for Acme
   await prisma.note.createMany({
     data: [
       {
@@ -93,7 +87,6 @@ async function main() {
     ],
   })
 
-  // Create sample notes for Globex
   await prisma.note.createMany({
     data: [
       {

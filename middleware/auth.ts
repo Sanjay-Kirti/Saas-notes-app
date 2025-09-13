@@ -16,7 +16,6 @@ export async function authMiddleware(request: NextRequest) {
   try {
     const payload = verifyToken(token)
     
-    // Add user info to headers for downstream use
     const requestHeaders = new Headers(request.headers)
     requestHeaders.set('x-user-id', payload.userId)
     requestHeaders.set('x-user-email', payload.email)
